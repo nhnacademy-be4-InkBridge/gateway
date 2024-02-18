@@ -15,18 +15,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfig {
 
-    @Value("${backend.url}")
-    private String backendUrl;
-
     @Value("${auth.url}")
     private String authUrl;
 
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-            .route("backend_route", r -> r.path("/api/**")
-                .uri(backendUrl))
-            .route("auth_route", r -> r.path("/auth/**")
+            .route("backend", r -> r.path("/api/**")
+                .and()
+                .uri("lb://INKBRIDGE-BACKEND"))
+            .route("auth", r -> r.path("/auth/**")
                 .uri(authUrl))
             .build();
     }
