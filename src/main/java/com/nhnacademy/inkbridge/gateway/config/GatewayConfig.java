@@ -18,6 +18,12 @@ public class GatewayConfig {
     @Value("${auth.url}")
     private String authUrl;
 
+    /**
+     * API 서버를 결정하는 메소드입니다.
+     *
+     * @param builder RouteLocatorBuilder
+     * @return RouteLocator
+     */
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
