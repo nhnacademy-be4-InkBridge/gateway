@@ -18,6 +18,9 @@ public class GatewayConfig {
     @Value("${auth.url}")
     private String authUrl;
 
+    @Value("${backend.url}")
+    private String backendUrl;
+
     /**
      * API 서버를 결정하는 메소드입니다.
      *
@@ -29,7 +32,7 @@ public class GatewayConfig {
         return builder.routes()
             .route("backend", r -> r.path("/api/**")
                 .and()
-                .uri("lb://INKBRIDGE-BACKEND"))
+                .uri(backendUrl))
             .route("auth", r -> r.path("/auth/**")
                 .uri(authUrl))
             .build();
