@@ -38,13 +38,13 @@ public class GatewayConfig {
                                       RedisTemplate<String, String> redisTemplate,
                                       JwtUtils jwtUtils, RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("backend", r -> r.path("/api/**")
-                        .and()
-                        .uri(backendUrl))
                 .route("auth", r -> r.path("/auth/**")
                         .uri(authUrl))
                 .route("jwt", r -> r.path("/api/mypage/**","/api/admin/**")
                         .filters(jwtFilter(authorizationFilter, redisTemplate, jwtUtils))
+                        .uri(backendUrl))
+                .route("backend", r -> r.path("/api/**")
+                        .and()
                         .uri(backendUrl))
 
                 .build();
