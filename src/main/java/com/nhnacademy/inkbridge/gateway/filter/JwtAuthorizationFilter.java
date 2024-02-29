@@ -50,6 +50,7 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
      * @param config config
      * @return 인가된 요청
      */
+
     @Override
     public GatewayFilter apply(Config config) {
         log.info("GatewayFilter start ->");
@@ -78,7 +79,6 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
             setAuthorizationHeader(exchange,memberId);
 
             return chain.filter(exchange);
-
         });
     }
 

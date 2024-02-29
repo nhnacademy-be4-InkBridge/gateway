@@ -46,7 +46,6 @@ public class GatewayConfig {
                 .route("backend", r -> r.path("/api/**")
                         .and()
                         .uri(backendUrl))
-
                 .build();
     }
 
