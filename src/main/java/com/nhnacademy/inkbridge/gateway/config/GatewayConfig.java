@@ -43,9 +43,10 @@ public class GatewayConfig {
                         .uri(backendUrl))
                 .route("auth", r -> r.path("/auth/**")
                         .uri(authUrl))
-                .route("jwt", r -> r.path("/jwt/**")
+                .route("jwt", r -> r.path("/api/mypage/**","/api/admin/**")
                         .filters(jwtFilter(authorizationFilter, redisTemplate, jwtUtils))
                         .uri(backendUrl))
+
                 .build();
     }
 
