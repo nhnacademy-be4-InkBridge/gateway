@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author jangjaehun
  * @version 2024/02/15
  */
+
 @Configuration
 public class GatewayConfig {
 
@@ -35,12 +36,12 @@ public class GatewayConfig {
      */
     @Bean
     public RouteLocator gatewayRoutes(JwtAuthorizationFilter authorizationFilter,
-                                      RedisTemplate<String, String> redisTemplate,
+                                      RedisTemplate<String, Object> redisTemplate,
                                       JwtUtils jwtUtils, RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("auth", r -> r.path("/auth/**")
                         .uri(authUrl))
-                .route("jwt", r -> r.path("/api/mypage/**","/api/admin/**")
+                .route("jwt", r -> r.path("/api/mypage/**","/api/admin/**","/api/auth/**")
                         .filters(jwtFilter(authorizationFilter, redisTemplate, jwtUtils))
                         .uri(backendUrl))
                 .route("backend", r -> r.path("/api/**")
@@ -50,7 +51,7 @@ public class GatewayConfig {
     }
 
     private Function<GatewayFilterSpec, UriSpec> jwtFilter(JwtAuthorizationFilter jwtAuthorizationFilter,
-                                                           RedisTemplate<String, String> redisTemplate,
+                                                           RedisTemplate<String, Object> redisTemplate,
                                                            JwtUtils jwtUtils) {
         return f -> f.filter(
                 jwtAuthorizationFilter.apply(new JwtAuthorizationFilter.Config(redisTemplate, jwtUtils))
