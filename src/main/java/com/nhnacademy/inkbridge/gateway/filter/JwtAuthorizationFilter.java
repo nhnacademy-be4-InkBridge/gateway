@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
      */
     @RequiredArgsConstructor
     public static class Config {
-        private final RedisTemplate<String, String> redisTemplate;
+        private final RedisTemplate<String, Object> redisTemplate;
         private final JwtUtils jwtUtils;
     }
 
@@ -53,23 +53,19 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.info("GatewayFilter start ->");
         return ((exchange, chain) -> {
             String accessToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            log.info("accessToken -> {}", accessToken);
             if (Objects.isNull(accessToken)) {
                 return unAuthorizedHandle(exchange);
             }
 
             accessToken = prefixRemoveBearer(accessToken);
-            log.info("accessToken prefixed -> {}", accessToken);
 
             if (Objects.isNull(accessToken)) {
                 return unAuthorizedHandle(exchange);
             }
 
             String uuid = config.jwtUtils.getUUID(accessToken);
-            log.info("uuid -> {}", uuid);
 
             if (isMemberId(config, uuid)) {
                 return unAuthorizedHandle(exchange);
