@@ -35,4 +35,13 @@ public class JwtUtils {
         }
     }
 
+    public String getRole(String token) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody()
+                    .get("ROLE", String.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
