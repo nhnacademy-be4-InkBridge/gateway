@@ -54,7 +54,10 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            String accessToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            String accessToken = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+
+            log.info("accessToken -> {}", accessToken);
+
             if (Objects.isNull(accessToken)) {
                 return unAuthorizedHandle(exchange);
             }
