@@ -58,6 +58,8 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
 
             log.info("accessToken -> {}", accessToken);
 
+            // 요청 경로
+
             if (Objects.isNull(accessToken)) {
                 return unAuthorizedHandle(exchange);
             }
@@ -65,6 +67,14 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
             accessToken = prefixRemoveBearer(accessToken);
 
             if (Objects.isNull(accessToken)) {
+                return unAuthorizedHandle(exchange);
+            }
+
+            String requestPath = exchange.getRequest().getPath().toString();
+            String role = config.jwtUtils.getRole(accessToken);
+            log.info("path -> {} role -> {}", requestPath,role);
+            // 멤버가 어드민 경로로 들어가려고 하면
+            if (isAdminPathNotValid(requestPath,role)) {
                 return unAuthorizedHandle(exchange);
             }
 
@@ -79,6 +89,13 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
 
             return chain.filter(exchange);
         });
+    }
+
+    private static boolean isAdminPathNotValid(String path,String role) {
+        if (path.contains("admin")) {
+            return !role.equals("[ROLE_ADMIN]");
+        }
+        return false;
     }
 
     /**
