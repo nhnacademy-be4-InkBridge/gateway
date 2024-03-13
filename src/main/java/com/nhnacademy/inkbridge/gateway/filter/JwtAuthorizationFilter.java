@@ -93,7 +93,7 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
 
     private static boolean isAdminPathNotValid(String path,String role) {
         if (path.contains("admin")) {
-            return !role.equals("[ROLE_ADMIN]");
+            return !role.equals("[ROLE_ADMIN]")&&!role.equals("[ROLE_SOCIAL]");
         }
         return false;
     }
