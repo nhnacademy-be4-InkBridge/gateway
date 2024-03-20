@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuthorizationFilter.Config> {
     private static final String MEMBER_ID = "member_id";
+    private static final String BLACK_LIST = "black-list";
 
     /**
      * 필요한 설정 클래스 .
@@ -67,6 +68,10 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
             accessToken = prefixRemoveBearer(accessToken);
 
             if (Objects.isNull(accessToken)) {
+                return unAuthorizedHandle(exchange);
+            }
+
+            if (isBlackList(config, accessToken)) {
                 return unAuthorizedHandle(exchange);
             }
 
@@ -138,6 +143,10 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
 
         return response.setComplete();
+    }
+
+    public static boolean isBlackList(Config config, String accessToken) {
+        return Objects.nonNull(config.redisTemplate.opsForHash().get(BLACK_LIST, accessToken));
     }
 
 
