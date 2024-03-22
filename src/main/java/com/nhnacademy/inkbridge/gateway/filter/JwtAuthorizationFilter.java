@@ -107,7 +107,6 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
                 return unAuthorizedHandle(exchange);
             }
 
-
             setAuthorizationHeader(exchange,memberId);
 
             return chain.filter(exchange);
