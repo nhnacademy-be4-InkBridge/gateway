@@ -27,8 +27,7 @@ import reactor.core.publisher.Mono;
 public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuthorizationFilter.Config> {
     private static final String MEMBER_ID = "member_id";
     private static final String BLACK_LIST = "black-list";
-    private static final String PATHVARIABLE = "memberId";
-
+    
     /**
      * 필요한 설정 클래스 .
      */
@@ -92,20 +91,6 @@ public class JwtAuthorizationFilter extends AbstractGatewayFilterFactory<JwtAuth
                 return unAuthorizedHandle(exchange);
             }
             String memberId = String.valueOf(config.redisTemplate.opsForHash().get(uuid, MEMBER_ID));
-
-            Map<String, String> pathVariables =
-                    exchange.getAttribute(ServerWebExchangeUtils.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-
-
-            String memberIdVariable = pathVariables.get(PATHVARIABLE);
-
-            if (memberIdVariable.isEmpty()) {
-                return unAuthorizedHandle(exchange);
-            }
-
-            if (!memberId.equals(memberIdVariable)) {
-                return unAuthorizedHandle(exchange);
-            }
 
             setAuthorizationHeader(exchange,memberId);
 
